@@ -1,4 +1,4 @@
-package backend.academy.logs.commandlineparser;
+package backend.academy.logs.parsers;
 
 import backend.academy.logs.entities.ParsingResult;
 
