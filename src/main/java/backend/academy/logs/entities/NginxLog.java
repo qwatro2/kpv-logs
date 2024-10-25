@@ -1,7 +1,6 @@
 package backend.academy.logs.entities;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 public record NginxLog(
