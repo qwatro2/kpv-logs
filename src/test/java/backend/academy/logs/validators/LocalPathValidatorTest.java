@@ -33,7 +33,8 @@ class LocalPathValidatorTest {
                 Arguments.of("./src/backend/**/bad_pattern.", false),
                 Arguments.of("logs/2024*", true),
                 Arguments.of("logs/**/2024-08-31.txt", true),
-                Arguments.of("logs/2024-08-31.pb.txt", true)
+                Arguments.of("logs/2024-08-31.pb.txt", true),
+                Arguments.of("C:/**/src/**/logs/*.logs", true)
         );
     }
 
