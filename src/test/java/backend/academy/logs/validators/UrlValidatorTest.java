@@ -6,9 +6,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
-class UrlPathValidatorTest {
+class UrlValidatorTest {
 
-    private final PathValidator lpv = new UrlPathValidator();
+    private final Validator lpv = new UrlValidator();
 
     private static Stream<Arguments> provideDataForValidate() {
         return Stream.of(
