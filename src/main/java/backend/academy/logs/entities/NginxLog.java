@@ -2,6 +2,7 @@ package backend.academy.logs.entities;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public record NginxLog(
     String remoteAddress,
@@ -13,8 +14,8 @@ public record NginxLog(
     String httpReferer,
     String httpUserAgent
 ) {
-    public static List<String> getListOfField() {
-        return List.of(
+    public static Set<String> getSetOfField() {
+        return Set.of(
             "remote-address",
             "remote-user",
             "time-local",
