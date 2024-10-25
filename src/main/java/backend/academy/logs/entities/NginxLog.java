@@ -8,8 +8,8 @@ public record NginxLog(
     String remoteUser,
     LocalDateTime timeLocal,
     Request request,
-    int status,
-    int bodyBytesSent,
+    Integer status,
+    Integer bodyBytesSent,
     String httpReferer,
     String httpUserAgent
 ) {
