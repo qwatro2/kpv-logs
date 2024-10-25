@@ -8,8 +8,8 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class LocalValidatorTest {
-    private final Validator lpv = new LocalValidator();
+class LocalPathValidatorTest {
+    private final Validator lpv = new LocalPathValidator();
 
     private static Stream<Arguments> provideDataForValidate() {
         return Stream.of(

@@ -6,9 +6,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
-class UrlValidatorTest {
+class UrlPathValidatorTest {
 
-    private final Validator lpv = new UrlValidator();
+    private final Validator upv = new UrlPathValidator();
 
     private static Stream<Arguments> provideDataForValidate() {
         return Stream.of(
@@ -30,7 +30,7 @@ class UrlValidatorTest {
     @ParameterizedTest
     @MethodSource("provideDataForValidate")
     void validate(String path, boolean expected) {
-        boolean actual = lpv.validate(path);
+        boolean actual = upv.validate(path);
         assertEquals(expected, actual);
     }
 }
