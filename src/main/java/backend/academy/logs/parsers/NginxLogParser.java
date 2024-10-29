@@ -7,8 +7,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NginxLogParser implements LogParser<NginxLog> {
-    private final RequestParser requestParser = new NginxRequestParser();
-    private final LocalDatetimeParser datetimeParser = new NginxLocalDatetimeParser();
+    private final RequestParser requestParser;
+    private final LocalDatetimeParser datetimeParser;
+
+    public NginxLogParser(RequestParser requestParser, LocalDatetimeParser datetimeParser) {
+        this.requestParser = requestParser;
+        this.datetimeParser = datetimeParser;
+    }
 
     @Override
     public NginxLog parse(String log) {

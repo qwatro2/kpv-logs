@@ -3,15 +3,18 @@ package backend.academy.logs.parsers;
 import backend.academy.logs.entities.NginxLog;
 import backend.academy.logs.entities.Request;
 import backend.academy.logs.types.RequestType;
+import java.time.LocalDateTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import java.time.LocalDateTime;
-import java.util.stream.Stream;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class NginxLogParserTest {
-    private final LogParser<NginxLog> parser = new NginxLogParser();
+    private final LogParser<NginxLog> parser =
+        new NginxLogParser(new NginxRequestParser(), new NginxLocalDatetimeParser());
 
     private static Stream<Arguments> provideValidLogs() {
         return Stream.of(
@@ -44,12 +47,17 @@ class NginxLogParserTest {
 
     private static Stream<Arguments> provideInvalidLogs() {
         return Stream.of(
-            Arguments.of("127.0.0.1 -john- [12/Feb/2022:14:23:45 +0000] \"UNKNOWN /home HTTP/1.1\" 200 1234 \"http://example.com\" \"Mozilla/5.0\""),
-            Arguments.of("127.0.0.1 -john- [12/Feb/2022:14:23:45 +0000] \"GET /home HTTP/1.1\" 200 1234 \"http://example.com\""),
+            Arguments.of(
+                "127.0.0.1 -john- [12/Feb/2022:14:23:45 +0000] \"UNKNOWN /home HTTP/1.1\" 200 1234 \"http://example.com\" \"Mozilla/5.0\""),
+            Arguments.of(
+                "127.0.0.1 -john- [12/Feb/2022:14:23:45 +0000] \"GET /home HTTP/1.1\" 200 1234 \"http://example.com\""),
             Arguments.of("127.0.0.1 -john- [12/Feb/2022:14:23:45 +0000] \"GET /home HTTP/1.1\" 200 1234"),
-            Arguments.of("127.0.0.1 - [12/Feb/2022:14:23:45 +0000] \"GET /home HTTP/1.1\" OK 1234 \"http://example.com\" \"Mozilla/5.0\""),
-            Arguments.of("127.0.0.1 -john- [12/Feb/2022:99:99:99 +0000] \"GET /home HTTP/1.1\" 200 1234 \"http://example.com\" \"Mozilla/5.0\""),
-            Arguments.of("127.0.0.1 -john- [12/Feb/2022:14:23:45] \"GET /home HTTP/1.1\" 200 1234 \"http://example.com\" \"Mozilla/5.0\"")
+            Arguments.of(
+                "127.0.0.1 - [12/Feb/2022:14:23:45 +0000] \"GET /home HTTP/1.1\" OK 1234 \"http://example.com\" \"Mozilla/5.0\""),
+            Arguments.of(
+                "127.0.0.1 -john- [12/Feb/2022:99:99:99 +0000] \"GET /home HTTP/1.1\" 200 1234 \"http://example.com\" \"Mozilla/5.0\""),
+            Arguments.of(
+                "127.0.0.1 -john- [12/Feb/2022:14:23:45] \"GET /home HTTP/1.1\" 200 1234 \"http://example.com\" \"Mozilla/5.0\"")
         );
     }
 
