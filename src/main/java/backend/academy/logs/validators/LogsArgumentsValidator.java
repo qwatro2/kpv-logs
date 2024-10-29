@@ -8,9 +8,15 @@ import java.util.function.BiFunction;
 
 public class LogsArgumentsValidator implements ArgumentsValidator {
     private BiFunction<ParsingResult, ValidationResult, Boolean> currentValidator;
-    private final Validator localPathValidator = new LocalPathValidator();
-    private final Validator urlPathValidator = new UrlPathValidator();
-    private final Validator dateValidator = new DateValidator();
+    private final Validator localPathValidator;
+    private final Validator urlPathValidator;
+    private final Validator dateValidator;
+
+    public LogsArgumentsValidator(Validator localPathValidator, Validator urlPathValidator, Validator dateValidator) {
+        this.localPathValidator = localPathValidator;
+        this.urlPathValidator = urlPathValidator;
+        this.dateValidator = dateValidator;
+    }
 
     @Override
     public ValidationResult validate(ParsingResult parsingResult) {

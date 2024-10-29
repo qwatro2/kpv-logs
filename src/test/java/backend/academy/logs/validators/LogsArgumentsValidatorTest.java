@@ -10,7 +10,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LogsArgumentsValidatorTest {
 
-    private final ArgumentsValidator validator = new LogsArgumentsValidator();
+    private final ArgumentsValidator validator = new LogsArgumentsValidator(
+        new LocalPathValidator(),
+        new UrlPathValidator(),
+        new DateValidator()
+    );
 
     static Stream<Arguments> provideParsingResults() {
         return Stream.of(
