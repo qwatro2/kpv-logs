@@ -8,7 +8,11 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class LocalLogStreamGetter implements LogStreamGetter {
-    private final LocalPathGetter localPathGetter = new LocalPathGetter();
+    private final LocalPathGetter localPathGetter;
+
+    public LocalLogStreamGetter(LocalPathGetter localPathGetter) {
+        this.localPathGetter = localPathGetter;
+    }
 
     @Override
     public LogStream getStream(String path) {

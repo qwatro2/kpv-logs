@@ -24,7 +24,7 @@ public class LocalLogStreamGetterTest {
 
     @BeforeEach
     public void setUp() throws IOException {
-        logStreamGetter = new LocalLogStreamGetter();
+        logStreamGetter = new LocalLogStreamGetter(new LocalPathGetter());
         tempDir = Files.createTempDirectory("testDir");
     }
 
