@@ -53,4 +53,28 @@ class LogsArgumentsValidatorTest {
             .filterField(filterField)
             .filterValue(filterValue);
     }
+
+    static Stream<Arguments> provideOutputValidationParsingResults() {
+        return Stream.of(
+            Arguments.of(createParsingResult(null), true),
+            Arguments.of(createParsingResult(""), false),
+            Arguments.of(createParsingResult("./dir"), false),
+            Arguments.of(createParsingResult("./result.txt"), true),
+            Arguments.of(createParsingResult("./**/result.txt"), false),
+            Arguments.of(createParsingResult("C:/**/result.txt"), false),
+            Arguments.of(createParsingResult("./dir/*.txt"), false),
+            Arguments.of(createParsingResult("C:/dir/*.txt"), false)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideOutputValidationParsingResults")
+    void testOutputValidation(ParsingResult parsingResult, boolean expectedIsValid) {
+        ValidationResult validationResult = validator.validate(parsingResult);
+        assertEquals(expectedIsValid, validationResult.isValid());
+    }
+
+    private static ParsingResult createParsingResult(String output) {
+        return createParsingResult("/valid/path/file.md", null, null, null, null, null).output(output);
+    }
 }
