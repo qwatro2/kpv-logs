@@ -3,6 +3,8 @@ package backend.academy.logs.validators;
 import backend.academy.logs.entities.NginxLog;
 import backend.academy.logs.entities.ParsingResult;
 import backend.academy.logs.entities.ValidationResult;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.Set;
 import java.util.function.BiFunction;
 
@@ -91,7 +93,7 @@ public class LogsArgumentsValidator implements ArgumentsValidator {
     }
 
     private boolean validateFilter(ParsingResult parsingResult, ValidationResult validationResult) {
-        currentValidator = (pr, vr) -> false;
+        currentValidator = this::validateOutput;
 
         if ((parsingResult.filterField() == null) != (parsingResult.filterValue() == null)) {
             validationResult.isValid(false).message("Arguments \"--filter-field\" and " +
@@ -109,6 +111,33 @@ public class LogsArgumentsValidator implements ArgumentsValidator {
             validationResult.isValid(false).message("Argument \"--filter-field\" should be " +
                 "\"remote-address\", \"remote-user\", \"time-local\", \"request-type\", \"rout\", " +
                 "\"http-version\", \"status\", \"body-bytes-send\", \"http-referer\" or \"http-user-agent\"");
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validateOutput(ParsingResult parsingResult, ValidationResult validationResult) {
+        currentValidator = (pr, vr) -> false;
+
+        if (parsingResult.output() == null) {
+            return true;
+        }
+
+        if (parsingResult.output().contains("*")) {
+            validationResult.isValid(false).message("Argument \"--output\" should be local path without \"*\"");
+            return false;
+        }
+
+        if (!localPathValidator.validate(parsingResult.output())) {
+            validationResult.isValid(false).message("Argument \"--output\" should be local path");
+            return false;
+        }
+
+        try {
+            new FileOutputStream(parsingResult.output(), true);
+        } catch (FileNotFoundException e) {
+            validationResult.isValid(false).message("File " + parsingResult.output() + "cannot be created or cannot be opened");
             return false;
         }
 
