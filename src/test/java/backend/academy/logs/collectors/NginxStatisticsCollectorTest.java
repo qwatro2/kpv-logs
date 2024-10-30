@@ -28,7 +28,7 @@ class NginxStatisticsCollectorTest {
     void setUp() {
         logParser = mock(LogParser.class);
         percentileCounter = mock(PercentileCounter.class);
-        collector = new NginxStatisticsCollector(logParser, percentileCounter);
+        collector = new NginxStatisticsCollector(logParser, percentileCounter, (log) -> true);
     }
 
     @Test

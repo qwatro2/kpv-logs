@@ -9,12 +9,14 @@ import backend.academy.logs.types.RequestType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.function.Predicate;
 
 public class NginxStatisticsCollector implements StatisticsCollector<NginxStatistics> {
     private final static double TARGET_PERCENTILE = 0.95;
 
     private final LogParser<NginxLog> logParser;
     private final PercentileCounter percentileCounter;
+    private final Predicate<NginxLog> filterPredicate;
 
     private int numberOfRequests = 0;
     private HashMap<String, Integer> numberOfRequestsByResource = new HashMap<>();
@@ -25,15 +27,18 @@ public class NginxStatisticsCollector implements StatisticsCollector<NginxStatis
     private HashMap<RequestType, Integer> numberOfRequestsByRequestType = new HashMap<>();
     private HashMap<LocalDate, Integer> numberOfRequestsByDate = new HashMap<>();
 
-    public NginxStatisticsCollector(LogParser<NginxLog> logParser, PercentileCounter percentileCounter) {
+    public NginxStatisticsCollector(LogParser<NginxLog> logParser, PercentileCounter percentileCounter,
+        Predicate<NginxLog> filterPredicate
+    ) {
         this.logParser = logParser;
         this.percentileCounter = percentileCounter;
+        this.filterPredicate = filterPredicate;
     }
 
     @Override
     public NginxStatistics collectStatistics(LogStream logStream) {
         reset();
-        logStream.stream().map(logParser::parse).forEach(this::process);
+        logStream.stream().map(logParser::parse).filter(filterPredicate).forEach(this::process);
         return new NginxStatistics(logStream.names(), numberOfRequests, numberOfRequestsByResource,
             numberOfRequestsByStatus, averageBodyBytesSent(), percentileCounter.getPercentile(),
             oldestLogTimestamp, newestLogTimestamp,
