@@ -22,7 +22,7 @@ public record NginxLog(
             "rout",
             "http-version",
             "status",
-            "body-bytes-send",
+            "body-bytes-sent",
             "http-referer",
             "http-user-agent"
         );
