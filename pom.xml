@@ -228,6 +228,13 @@
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Percentile -->
+        <dependency>
+            <groupId>com.tdunning</groupId>
+            <artifactId>t-digest</artifactId>
+            <version>3.2</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
