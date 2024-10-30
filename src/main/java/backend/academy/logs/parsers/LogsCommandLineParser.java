@@ -21,6 +21,7 @@ public class LogsCommandLineParser implements CommandLineParser {
                 case "--format" -> parsingResult::format;
                 case "--filter-field" -> parsingResult::filterField;
                 case "--filter-value" -> parsingResult::filterValue;
+                case "--output" -> parsingResult::output;
                 default -> null;
             };
 
