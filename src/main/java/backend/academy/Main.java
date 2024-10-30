@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass public class Main {
     public static void main(String[] args) {
-        App app = new LogsAnalyzerApp(System.out);
+        App app = new LogsAnalyzerApp(System.err);
         app.run(args);
     }
 }
