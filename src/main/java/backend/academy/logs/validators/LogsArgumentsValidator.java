@@ -25,7 +25,7 @@ public class LogsArgumentsValidator implements ArgumentsValidator {
         ValidationResult validationResult = new ValidationResult().isValid(true).message("OK");
 
         currentValidator = this::validatePath;
-        while (currentValidator.apply(parsingResult, validationResult));
+        while (currentValidator.apply(parsingResult, validationResult)) {}
 
         return validationResult;
     }
@@ -96,8 +96,8 @@ public class LogsArgumentsValidator implements ArgumentsValidator {
         currentValidator = this::validateOutput;
 
         if ((parsingResult.filterField() == null) != (parsingResult.filterValue() == null)) {
-            validationResult.isValid(false).message("Arguments \"--filter-field\" and " +
-                "\"--filter-value\" should be used together");
+            validationResult.isValid(false).message("Arguments \"--filter-field\" and "
+                + "\"--filter-value\" should be used together");
             return false;
         }
 
@@ -108,9 +108,9 @@ public class LogsArgumentsValidator implements ArgumentsValidator {
         Set<String> fields = NginxLog.getSetOfField();
 
         if (!fields.contains(parsingResult.filterField())) {
-            validationResult.isValid(false).message("Argument \"--filter-field\" should be " +
-                "\"remote-address\", \"remote-user\", \"time-local\", \"request-type\", \"rout\", " +
-                "\"http-version\", \"status\", \"body-bytes-send\", \"http-referer\" or \"http-user-agent\"");
+            validationResult.isValid(false).message("Argument \"--filter-field\" should be "
+                + "\"remote-address\", \"remote-user\", \"time-local\", \"request-type\", \"rout\", "
+                + "\"http-version\", \"status\", \"body-bytes-send\", \"http-referer\" or \"http-user-agent\"");
             return false;
         }
 
@@ -119,6 +119,7 @@ public class LogsArgumentsValidator implements ArgumentsValidator {
 
     private boolean validateOutput(ParsingResult parsingResult, ValidationResult validationResult) {
         currentValidator = (pr, vr) -> false;
+        boolean result = true;
 
         if (parsingResult.output() == null) {
             return true;
@@ -126,21 +127,24 @@ public class LogsArgumentsValidator implements ArgumentsValidator {
 
         if (parsingResult.output().contains("*")) {
             validationResult.isValid(false).message("Argument \"--output\" should be local path without \"*\"");
-            return false;
+            result = false;
         }
 
-        if (!localPathValidator.validate(parsingResult.output())) {
+        if (result && !localPathValidator.validate(parsingResult.output())) {
             validationResult.isValid(false).message("Argument \"--output\" should be local path");
-            return false;
+            result = false;
         }
 
-        try {
-            new FileOutputStream(parsingResult.output(), true);
-        } catch (FileNotFoundException e) {
-            validationResult.isValid(false).message("File " + parsingResult.output() + "cannot be created or cannot be opened");
-            return false;
+        if (result) {
+            try {
+                new FileOutputStream(parsingResult.output(), true);
+            } catch (FileNotFoundException e) {
+                validationResult.isValid(false).message("File " + parsingResult.output()
+                    + "cannot be created or cannot be opened");
+                result =  false;
+            }
         }
 
-        return true;
+        return result;
     }
 }
