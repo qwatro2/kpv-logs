@@ -39,10 +39,17 @@ public class NginxStatisticsCollector implements StatisticsCollector<NginxStatis
     public NginxStatistics collectStatistics(LogStream logStream) {
         reset();
         logStream.stream().map(logParser::parse).filter(filterPredicate).forEach(this::process);
-        return new NginxStatistics(logStream.names(), numberOfRequests, numberOfRequestsByResource,
-            numberOfRequestsByStatus, averageBodyBytesSent(), percentileCounter.getPercentile(),
-            oldestLogTimestamp, newestLogTimestamp,
-            numberOfRequestsByRequestType, numberOfRequestsByDate);
+        return new NginxStatistics()
+            .names(logStream.names())
+            .numberOfRequests(numberOfRequests)
+            .numberOfRequestsByResource(numberOfRequestsByResource)
+            .numberOfRequestsByStatus(numberOfRequestsByStatus)
+            .averageBodyBytesSent(averageBodyBytesSent())
+            .percentile(percentileCounter.getPercentile())
+            .oldestLogTimestamp(oldestLogTimestamp)
+            .newestLogTimestamp(newestLogTimestamp)
+            .numberOfRequestsByRequestType(numberOfRequestsByRequestType)
+            .numberOfRequestsByDate(numberOfRequestsByDate);
     }
 
     private double averageBodyBytesSent() {

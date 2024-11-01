@@ -55,13 +55,17 @@ class AdocNginxStatisticsPrinterTest {
         dates.put(LocalDate.of(2023, 10, 1), 10);
         dates.put(LocalDate.of(2023, 10, 2), 30);
 
-        NginxStatistics statistics = new NginxStatistics(
-            fileNames, 100, resources, statuses,
-            500.0, 1000.0,
-            LocalDateTime.of(2023, 10, 1, 10, 0),
-            LocalDateTime.of(2023, 10, 31, 22, 0),
-            requestTypes, dates
-        );
+        NginxStatistics statistics = new NginxStatistics()
+            .names(fileNames)
+            .numberOfRequests(100)
+            .numberOfRequestsByResource(resources)
+            .numberOfRequestsByStatus(statuses)
+            .averageBodyBytesSent(500.0)
+            .percentile(1000.0)
+            .oldestLogTimestamp(LocalDateTime.of(2023, 10, 1, 10, 0))
+            .newestLogTimestamp(LocalDateTime.of(2023, 10, 31, 22, 0))
+            .numberOfRequestsByRequestType(requestTypes)
+            .numberOfRequestsByDate(dates);
 
         printer.print(parsingResult, statistics);
 
