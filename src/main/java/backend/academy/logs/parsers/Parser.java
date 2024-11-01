@@ -1,5 +1,5 @@
 package backend.academy.logs.parsers;
 
-public interface Parser<From, To> {
-    To parse(From value);
+public interface Parser<F, T> {
+    T parse(F value);
 }
