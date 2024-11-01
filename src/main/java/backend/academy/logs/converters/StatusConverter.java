@@ -1,5 +1,6 @@
 package backend.academy.logs.converters;
 
+import backend.academy.logs.types.StatusCodes;
 import java.util.HashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -8,11 +9,11 @@ public class StatusConverter implements Converter<Integer> {
     @Override
     public String convert(Integer value) {
         HashMap<Predicate<Integer>, Function<Integer, String>> predicateFunctionHashMap = new HashMap<>();
-        predicateFunctionHashMap.put(this::infoPredicate, this::convertInfo);
-        predicateFunctionHashMap.put(this::successPredicate, this::convertSuccess);
-        predicateFunctionHashMap.put(this::redirectionPredicate, this::convertRedirection);
-        predicateFunctionHashMap.put(this::clientPredicate, this::convertClient);
-        predicateFunctionHashMap.put(this::serverPredicate, this::convertServer);
+        predicateFunctionHashMap.put(StatusCodes::isInfoCode, this::convertInfo);
+        predicateFunctionHashMap.put(StatusCodes::isSuccessCode, this::convertSuccess);
+        predicateFunctionHashMap.put(StatusCodes::isRedirectionCode, this::convertRedirection);
+        predicateFunctionHashMap.put(StatusCodes::isClientCode, this::convertClient);
+        predicateFunctionHashMap.put(StatusCodes::isServerCode, this::convertServer);
 
         for (Predicate<Integer> predicate : predicateFunctionHashMap.keySet()) {
             if (predicate.test(value)) {
@@ -22,141 +23,128 @@ public class StatusConverter implements Converter<Integer> {
         return "Unknown";
     }
 
-    private boolean infoPredicate(Integer value) {
-        return 100 <= value && value <= 103;
-    }
-
     private String convertInfo(Integer value) {
         return switch (value) {
-            case 100 -> "Continue";
-            case 101 -> "Switching Protocols";
-            case 102 -> "Processing";
-            case 103 -> "Early Hints";
+            case StatusCodes.CONTINUE -> "Continue";
+            case StatusCodes.SWITCHING_PROTOCOLS -> "Switching Protocols";
+            case StatusCodes.PROCESSING -> "Processing";
+            case StatusCodes.EARLY_HINTS -> "Early Hints";
             default -> null;
         };
-    }
-
-    private boolean successPredicate(Integer value) {
-        return 200 <= value && value <= 208 || value == 226;
     }
 
     private String convertSuccess(Integer value) {
         return switch (value) {
-            case 200 -> "OK";
-            case 201 -> "Created";
-            case 202 -> "Accepted";
-            case 203 -> "Non-Authoritative Information";
-            case 204 -> "No Content";
-            case 205 -> "Reset Content";
-            case 206 -> "Partial Content";
-            case 207 -> "Multi-Status";
-            case 208 -> "Already Reported";
-            case 226 -> "IM Used";
+            case StatusCodes.OK -> "OK";
+            case StatusCodes.CREATED -> "Created";
+            case StatusCodes.ACCEPTED -> "Accepted";
+            case StatusCodes.NON_AUTHORITATIVE_INFORMATION -> "Non-Authoritative Information";
+            case StatusCodes.NO_CONTENT -> "No Content";
+            case StatusCodes.RESET_CONTENT -> "Reset Content";
+            case StatusCodes.PARTIAL_CONTENT -> "Partial Content";
+            case StatusCodes.MULTI_STATUS -> "Multi-Status";
+            case StatusCodes.ALREADY_REPORTED -> "Already Reported";
+            case StatusCodes.IM_USED -> "IM Used";
             default -> null;
         };
-    }
-
-    private boolean redirectionPredicate(Integer value) {
-        return 300 <= value && value <= 309 && value != 306;
     }
 
     private String convertRedirection(Integer value) {
         return switch (value) {
-            case 300 -> "Multiple Choices";
-            case 301 -> "Moved Permanently";
-            case 302 -> "Found";
-            case 303 -> "See Other";
-            case 304 -> "Not Modified";
-            case 305 -> "Use Proxy";
-            case 307 -> "Temporary Redirect";
-            case 308 -> "Permanent Redirect";
+            case StatusCodes.MULTIPLE_CHOICES -> "Multiple Choices";
+            case StatusCodes.MOVED_PERMANENTLY -> "Moved Permanently";
+            case StatusCodes.FOUND -> "Found";
+            case StatusCodes.SEE_OTHER -> "See Other";
+            case StatusCodes.NOT_MODIFIED -> "Not Modified";
+            case StatusCodes.USE_PROXY -> "Use Proxy";
+            case StatusCodes.TEMPORARY_REDIRECT -> "Temporary Redirect";
+            case StatusCodes.PERMANENT_REDIRECT -> "Permanent Redirect";
             default -> null;
         };
-    }
-
-    private boolean clientPredicate(Integer value) {
-        return 400 <= value && value <= 429 && value != 419 && value != 420 || value == 431 || value == 451;
     }
 
     private String convertClient(Integer value) {
-        if (value < 410) {
-            return convertClient40x(value);
+        Function<Integer, String> convertFunction;
+        if (StatusCodes.is40xCode(value)) {
+            convertFunction = this::convertClient40x;
+        } else if (StatusCodes.is41xCode(value)) {
+            convertFunction = this::convertClient41x;
+        } else if (StatusCodes.is42xCode(value)) {
+            convertFunction = this::convertClient42x;
+        } else if (StatusCodes.is4xxCodeOther(value)) {
+            convertFunction = this::convertClientOther;
+        } else {
+            convertFunction = (v) -> null;
         }
-        if (value < 420) {
-            return convertClient41x(value);
-        }
-        if (value < 430) {
-            return convertClient42x(value);
-        }
-        return switch (value) {
-            case 431 -> "Request Header Fields Too Large";
-            case 451 -> "Unavailable For Legal Reasons";
-            default -> null;
-        };
-    }
-
-    private boolean serverPredicate(Integer value) {
-        return 500 <= value && value <= 511 && value != 509;
+        return convertFunction.apply(value);
     }
 
     private String convertServer(Integer value) {
         return switch (value) {
-            case 500 -> "Internal Server Error";
-            case 501 -> "Not Implemented";
-            case 502 -> "Bad Gateway";
-            case 503 -> "Service Unavailable";
-            case 504 -> "Gateway Timeout";
-            case 505 -> "HTTP Version Not Supported";
-            case 506 -> "Variant Also Negotiates";
-            case 507 -> "Insufficient Storage";
-            case 508 -> "Loop Detected";
-            case 510 -> "Not Extended";
-            case 511 -> "Network Authentication Required";
+            case StatusCodes.INTERNAL_SERVER_ERROR -> "Internal Server Error";
+            case StatusCodes.NOT_IMPLEMENTED -> "Not Implemented";
+            case StatusCodes.BAD_GATEWAY -> "Bad Gateway";
+            case StatusCodes.SERVICE_UNAVAILABLE -> "Service Unavailable";
+            case StatusCodes.GATEWAY_TIMEOUT -> "Gateway Timeout";
+            case StatusCodes.HTTP_VERSION_NOT_SUPPORTED -> "HTTP Version Not Supported";
+            case StatusCodes.VARIANT_ALSO_NEGOTIATES -> "Variant Also Negotiates";
+            case StatusCodes.INSUFFICIENT_STORAGE -> "Insufficient Storage";
+            case StatusCodes.LOOP_DETECTED -> "Loop Detected";
+            case StatusCodes.NOT_EXTENDED -> "Not Extended";
+            case StatusCodes.NETWORK_AUTHENTICATION_REQUIRED -> "Network Authentication Required";
             default -> null;
         };
     }
 
     private String convertClient40x(Integer value) {
         return switch (value) {
-            case 400 -> "Bad Request";
-            case 401 -> "Unauthorized";
-            case 402 -> "Payment Required";
-            case 403 -> "Forbidden";
-            case 404 -> "Not Found";
-            case 405 -> "Method Not Allowed";
-            case 406 -> "Not Acceptable";
-            case 407 -> "Proxy Authentication Required";
-            case 408 -> "Request Timeout";
-            case 409 -> "Conflict";
+            case StatusCodes.BAD_REQUEST -> "Bad Request";
+            case StatusCodes.UNAUTHORIZED -> "Unauthorized";
+            case StatusCodes.PAYMENT_REQUIRED -> "Payment Required";
+            case StatusCodes.FORBIDDEN -> "Forbidden";
+            case StatusCodes.NOT_FOUND -> "Not Found";
+            case StatusCodes.METHOD_NOT_ALLOWED -> "Method Not Allowed";
+            case StatusCodes.NOT_ACCEPTABLE -> "Not Acceptable";
+            case StatusCodes.PROXY_AUTHENTICATION_REQUIRED -> "Proxy Authentication Required";
+            case StatusCodes.REQUEST_TIMEOUT -> "Request Timeout";
+            case StatusCodes.CONFLICT -> "Conflict";
             default -> null;
         };
     }
 
     private String convertClient41x(Integer value) {
         return switch (value) {
-            case 410 -> "Gone";
-            case 411 -> "Length Required";
-            case 412 -> "Precondition Failed";
-            case 413 -> "Content Too Large";
-            case 414 -> "URI Too Long";
-            case 415 -> "Unsupported Media Type";
-            case 416 -> "Range Not Satisfiable";
-            case 417 -> "Expectation Failed";
-            case 418 -> "I'm a teapot";
+            case StatusCodes.GONE -> "Gone";
+            case StatusCodes.LENGTH_REQUIRED -> "Length Required";
+            case StatusCodes.PRECONDITION_FAILED -> "Precondition Failed";
+            case StatusCodes.CONTENT_TOO_LARGE -> "Content Too Large";
+            case StatusCodes.URI_TOO_LONG -> "URI Too Long";
+            case StatusCodes.UNSUPPORTED_MEDIA_TYPE -> "Unsupported Media Type";
+            case StatusCodes.RANGE_NOT_SATISFIABLE -> "Range Not Satisfiable";
+            case StatusCodes.EXPECTATION_FAILED -> "Expectation Failed";
+            case StatusCodes.IM_A_TEAPOT -> "I'm a teapot";
             default -> null;
         };
     }
 
     private String convertClient42x(Integer value) {
         return switch (value) {
-            case 421 -> "Misdirected Request";
-            case 422 -> "Unprocessable Content";
-            case 423 -> "Locked";
-            case 424 -> "Failed Dependency";
-            case 425 -> "Too Early";
-            case 426 -> "Upgrade Required";
-            case 428 -> "Precondition Required";
-            case 429 -> "Too Many Requests";
+            case StatusCodes.MISDIRECTED_REQUEST -> "Misdirected Request";
+            case StatusCodes.UNPROCESSABLE_CONTENT -> "Unprocessable Content";
+            case StatusCodes.LOCKED -> "Locked";
+            case StatusCodes.FAILED_DEPENDENCY -> "Failed Dependency";
+            case StatusCodes.TOO_EARLY -> "Too Early";
+            case StatusCodes.UPGRADE_REQUIRED -> "Upgrade Required";
+            case StatusCodes.PRECONDITION_REQUIRED -> "Precondition Required";
+            case StatusCodes.TOO_MANY_REQUESTS -> "Too Many Requests";
+            default -> null;
+        };
+    }
+
+    private String convertClientOther(Integer value) {
+        return switch (value) {
+            case StatusCodes.REQUEST_HEADER_FIELDS_TOO_LARGE -> "Request Header Fields Too Large";
+            case StatusCodes.UNAVAILABLE_FOR_LEGAL_REASONS -> "Unavailable For Legal Reasons";
             default -> null;
         };
     }
