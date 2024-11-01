@@ -36,37 +36,37 @@ public class SimpleFilterBuilder implements FilterBuilder {
     }
 
     private Predicate<NginxLog> processFilterField(ParsingResult parsingResult) {
-        if (parsingResult.filterField() == null) {
+        return switch (parsingResult.filterField()) {
+            case null -> (log) -> true;
+            case "time-local" -> processFilterFieldData(parsingResult);
+            case "status" -> processFilterFieldInteger(parsingResult, NginxLog::status);
+            case "body-bytes-sent" -> processFilterFieldInteger(parsingResult, NginxLog::bodyBytesSent);
+            default -> processFilterFieldString(parsingResult);
+        };
+    }
+
+    private Predicate<NginxLog> processFilterFieldData(ParsingResult parsingResult) {
+        try {
+            LocalDateTime localDateTime = LocalDateTime.parse(parsingResult.filterValue());
+            return (log) -> localDateTime.isEqual(log.timeLocal());
+        } catch (DateTimeParseException e) {
             return (log) -> true;
         }
+    }
 
-        switch (parsingResult.filterField()) {
-            case "time-local" -> {
-                try {
-                    LocalDateTime localDateTime = LocalDateTime.parse(parsingResult.filterValue());
-                    return (log) -> localDateTime.isEqual(log.timeLocal());
-                } catch (DateTimeParseException e) {
-                    return (log) -> true;
-                }
-            }
-            case "status" -> {
-                try {
-                    int status = Integer.parseInt(parsingResult.filterValue());
-                    return (log) -> status == log.status();
-                } catch (NumberFormatException e) {
-                    return (log) -> true;
-                }
-            }
-            case "body-bytes-sent" -> {
-                try {
-                    int bodyBytesSent = Integer.parseInt(parsingResult.filterValue());
-                    return (log) -> bodyBytesSent == log.bodyBytesSent();
-                } catch (NumberFormatException e) {
-                    return (log) -> true;
-                }
-            }
+    private Predicate<NginxLog> processFilterFieldInteger(
+        ParsingResult parsingResult,
+        Function<NginxLog, Integer> valueGetter
+    ) {
+        try {
+            int value = Integer.parseInt(parsingResult.filterValue());
+            return (log) -> value == valueGetter.apply(log);
+        } catch (NumberFormatException e) {
+            return (log) -> true;
         }
+    }
 
+    private Predicate<NginxLog> processFilterFieldString(ParsingResult parsingResult) {
         Function<NginxLog, String> actualField = switch (parsingResult.filterField()) {
             case "remote-address" -> NginxLog::remoteAddress;
             case "remote-user" -> NginxLog::remoteUser;
@@ -75,15 +75,8 @@ public class SimpleFilterBuilder implements FilterBuilder {
             case "http-version" -> (log) -> log.request().httpVersion();
             case "http-referer" -> NginxLog::httpReferer;
             case "http-user-agent" -> NginxLog::httpUserAgent;
-            default -> null;
+            default -> (log) -> parsingResult.filterValue();
         };
-
-        if (actualField == null) {
-            return (log) -> true;
-        }
-
         return (log) -> Objects.equals(actualField.apply(log), parsingResult.filterValue());
-
-
     }
 }
