@@ -4,15 +4,18 @@ import backend.academy.logs.converters.Converter;
 import backend.academy.logs.entities.ParsingResult;
 import backend.academy.logs.statistics.NginxStatistics;
 import backend.academy.logs.types.RequestType;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 public class MarkdownNginxStatisticsPrinter extends NginxStatisticsPrinter {
+    private static final String tableSeparator = "|:-:|-:|";
 
-    public MarkdownNginxStatisticsPrinter(Converter<Integer> statusConverter, Converter<RequestType> requestTypeConverter) {
+    public MarkdownNginxStatisticsPrinter(
+        Converter<Integer> statusConverter,
+        Converter<RequestType> requestTypeConverter
+    ) {
         super(statusConverter, requestTypeConverter);
     }
 
@@ -20,7 +23,7 @@ public class MarkdownNginxStatisticsPrinter extends NginxStatisticsPrinter {
     protected void printBaseInformation(ParsingResult parsingResult, NginxStatistics statistics) {
         printStream.println("#### Общая информация");
         printStream.println("|Метрика|Значение|");
-        printStream.println("|:-:|-:|");
+        printStream.println(tableSeparator);
         printStream.println("|Файл(-ы)|" + renderList(statistics.names()) + "|");
         printStream.println("|Начальная дата|" + renderString(parsingResult.from()) + "|");
         printStream.println("|Конечная дата|" + renderString(parsingResult.to()) + "|");
@@ -35,7 +38,7 @@ public class MarkdownNginxStatisticsPrinter extends NginxStatisticsPrinter {
     protected <K> void printMapCounter(String title, HashMap<K, Integer> mapCounter, Function<K, String> keyRenderer) {
         printStream.println("#### " + title);
         printStream.println("|" + title + "|Количество|");
-        printStream.println("|:-:|-:|");
+        printStream.println(tableSeparator);
         List<Map.Entry<K, Integer>> sortedKeyValues = getSortedMap(mapCounter);
         for (Map.Entry<K, Integer> keyValue : sortedKeyValues) {
             printStream.println("|" + keyRenderer.apply(keyValue.getKey()) + "|" + keyValue.getValue() + "|");
