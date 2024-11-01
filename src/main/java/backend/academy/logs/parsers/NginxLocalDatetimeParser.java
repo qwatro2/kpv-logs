@@ -1,6 +1,6 @@
 package backend.academy.logs.parsers;
 
-import backend.academy.logs.types.Month;
+import backend.academy.logs.types.Months;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;
@@ -34,18 +34,18 @@ public class NginxLocalDatetimeParser implements LocalDatetimeParser {
 
     private int monthNumberFromString(String month) {
         return switch (month) {
-            case "Jan" -> Month.JANUARY;
-            case "Feb" -> Month.FEBRUARY;
-            case "Mar" -> Month.MARCH;
-            case "Apr" -> Month.APRIL;
-            case "May" -> Month.MAY;
-            case "Jun" -> Month.JUNE;
-            case "Jul" -> Month.JULY;
-            case "Aug" -> Month.AUGUST;
-            case "Sep" -> Month.SEPTEMBER;
-            case "Oct" -> Month.OCTOBER;
-            case "Nov" -> Month.NOVEMBER;
-            case "Dec" -> Month.DECEMBER;
+            case "Jan" -> Months.JANUARY;
+            case "Feb" -> Months.FEBRUARY;
+            case "Mar" -> Months.MARCH;
+            case "Apr" -> Months.APRIL;
+            case "May" -> Months.MAY;
+            case "Jun" -> Months.JUNE;
+            case "Jul" -> Months.JULY;
+            case "Aug" -> Months.AUGUST;
+            case "Sep" -> Months.SEPTEMBER;
+            case "Oct" -> Months.OCTOBER;
+            case "Nov" -> Months.NOVEMBER;
+            case "Dec" -> Months.DECEMBER;
             default -> 0;
         };
     }

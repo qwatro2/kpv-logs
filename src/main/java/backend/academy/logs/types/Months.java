@@ -1,6 +1,9 @@
 package backend.academy.logs.types;
 
-public class Month {
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public final class Months {
     public static final int JANUARY = 1;
     public static final int FEBRUARY = 2;
     public static final int MARCH = 3;
