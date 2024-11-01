@@ -4,13 +4,13 @@ import backend.academy.logs.converters.Converter;
 import backend.academy.logs.entities.ParsingResult;
 import backend.academy.logs.statistics.NginxStatistics;
 import backend.academy.logs.types.RequestType;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 public class AdocNginxStatisticsPrinter extends NginxStatisticsPrinter {
+    private static final String tableTopBottom = "|====";
 
     public AdocNginxStatisticsPrinter(Converter<Integer> statusConverter, Converter<RequestType> requestTypeConverter) {
         super(statusConverter, requestTypeConverter);
@@ -19,7 +19,7 @@ public class AdocNginxStatisticsPrinter extends NginxStatisticsPrinter {
     @Override
     protected void printBaseInformation(ParsingResult parsingResult, NginxStatistics statistics) {
         printStream.println("==== Общая информация");
-        printStream.println("|====");
+        printStream.println(tableTopBottom);
         printStream.println("|Метрика |Значение");
         printStream.println("|Файл(-ы)\n|" + renderList(statistics.names()));
         printStream.println("|Начальная дата\n|" + renderString(parsingResult.from()));
@@ -29,18 +29,18 @@ public class AdocNginxStatisticsPrinter extends NginxStatisticsPrinter {
         printStream.println("|95-перцентиль размера ответа\n|" + statistics.percentile());
         printStream.println("|Самая старая запись\n|" + statistics.oldestLogTimestamp());
         printStream.println("|Самая новая запись\n|" + statistics.newestLogTimestamp());
-        printStream.println("|====");
+        printStream.println(tableTopBottom);
     }
 
     @Override
     protected <K> void printMapCounter(String title, HashMap<K, Integer> mapCounter, Function<K, String> keyRenderer) {
         printStream.println("==== " + title);
-        printStream.println("|====");
+        printStream.println(tableTopBottom);
         printStream.println("|" + title + " |Количество");
         List<Map.Entry<K, Integer>> sortedKeyValues = getSortedMap(mapCounter);
         for (Map.Entry<K, Integer> keyValue : sortedKeyValues) {
             printStream.println("|" + keyRenderer.apply(keyValue.getKey()) + "\n|" + keyValue.getValue());
         }
-        printStream.println("|====");
+        printStream.println(tableTopBottom);
     }
 }
