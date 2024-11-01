@@ -17,10 +17,10 @@ public class NginxLogParser implements LogParser<NginxLog> {
 
     @Override
     public NginxLog parse(String log) {
-        String regex = "^(?<remoteaddress>.*) -(?<remoteuser>.*)- " +
-                "\\[(?<timelocal>.*)] " +
-            "\"(?<request>.*)\" (?<status>\\d{3}) (?<bodybytessent>\\d*) " +
-            "\"(?<httpreferer>.*)\" \"(?<httpuseragent>.*)\"$";
+        String regex = "^(?<remoteaddress>.*) -(?<remoteuser>.*)- "
+                + "\\[(?<timelocal>.*)] "
+            + "\"(?<request>.*)\" (?<status>\\d{3}) (?<bodybytessent>\\d*) "
+            + "\"(?<httpreferer>.*)\" \"(?<httpuseragent>.*)\"$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(log);
 
