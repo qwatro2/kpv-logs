@@ -1,24 +1,29 @@
 package backend.academy.logs.converters;
 
+import java.util.HashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 public class StatusConverter implements Converter<Integer> {
     @Override
     public String convert(Integer value) {
-        if (100 <= value && value <= 103) {
-            return convertInfo(value);
-        }
-        if (200 <= value && value <= 208 || value == 226) {
-            return convertSuccess(value);
-        }
-        if (300 <= value && value <= 309 && value != 306) {
-            return convertRedirection(value);
-        }
-        if (400 <= value && value <= 429 && value != 419 && value != 420 || value == 431 || value == 451) {
-            return convertClient(value);
-        }
-        if (500 <= value && value <= 511 && value != 509) {
-            return convertServer(value);
+        HashMap<Predicate<Integer>, Function<Integer, String>> predicateFunctionHashMap = new HashMap<>();
+        predicateFunctionHashMap.put(this::infoPredicate, this::convertInfo);
+        predicateFunctionHashMap.put(this::successPredicate, this::convertSuccess);
+        predicateFunctionHashMap.put(this::redirectionPredicate, this::convertRedirection);
+        predicateFunctionHashMap.put(this::clientPredicate, this::convertClient);
+        predicateFunctionHashMap.put(this::serverPredicate, this::convertServer);
+
+        for (Predicate<Integer> predicate : predicateFunctionHashMap.keySet()) {
+            if (predicate.test(value)) {
+                return predicateFunctionHashMap.get(predicate).apply(value);
+            }
         }
         return "Unknown";
+    }
+
+    private boolean infoPredicate(Integer value) {
+        return 100 <= value && value <= 103;
     }
 
     private String convertInfo(Integer value) {
@@ -29,6 +34,10 @@ public class StatusConverter implements Converter<Integer> {
             case 103 -> "Early Hints";
             default -> null;
         };
+    }
+
+    private boolean successPredicate(Integer value) {
+        return 200 <= value && value <= 208 || value == 226;
     }
 
     private String convertSuccess(Integer value) {
@@ -47,6 +56,10 @@ public class StatusConverter implements Converter<Integer> {
         };
     }
 
+    private boolean redirectionPredicate(Integer value) {
+        return 300 <= value && value <= 309 && value != 306;
+    }
+
     private String convertRedirection(Integer value) {
         return switch (value) {
             case 300 -> "Multiple Choices";
@@ -59,6 +72,10 @@ public class StatusConverter implements Converter<Integer> {
             case 308 -> "Permanent Redirect";
             default -> null;
         };
+    }
+
+    private boolean clientPredicate(Integer value) {
+        return 400 <= value && value <= 429 && value != 419 && value != 420 || value == 431 || value == 451;
     }
 
     private String convertClient(Integer value) {
@@ -76,6 +93,10 @@ public class StatusConverter implements Converter<Integer> {
             case 451 -> "Unavailable For Legal Reasons";
             default -> null;
         };
+    }
+
+    private boolean serverPredicate(Integer value) {
+        return 500 <= value && value <= 511 && value != 509;
     }
 
     private String convertServer(Integer value) {
