@@ -6,5 +6,6 @@ import java.io.PrintStream;
 
 public interface StatisticsPrinter<T extends AbstractStatistics> {
     StatisticsPrinter<T> setPrintStream(PrintStream printStream);
+
     void print(ParsingResult parsingResult, T statistics);
 }
