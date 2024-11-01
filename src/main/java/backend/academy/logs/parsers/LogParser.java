@@ -1,4 +1,4 @@
 package backend.academy.logs.parsers;
 
-public interface LogParser<Log> extends Parser<String, Log> {
+public interface LogParser<L> extends Parser<String, L> {
 }
