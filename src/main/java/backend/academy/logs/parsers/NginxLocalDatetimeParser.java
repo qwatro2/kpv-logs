@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 public class NginxLocalDatetimeParser implements LocalDatetimeParser {
     @Override
     public LocalDateTime parse(String localDateTime) {
-        String regex = "^(?<day>\\d{2})/(?<month>[A-Z][a-z]{2})/(?<year>\\d{4}):" +
-            "(?<hour>\\d{2}):(?<minute>\\d{2}):(?<second>\\d{2}) (?<timezone>([+\\-])\\d{4})$";
+        String regex = "^(?<day>\\d{2})/(?<month>[A-Z][a-z]{2})/(?<year>\\d{4}):"
+            + "(?<hour>\\d{2}):(?<minute>\\d{2}):(?<second>\\d{2}) (?<timezone>([+\\-])\\d{4})$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(localDateTime);
 
