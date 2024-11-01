@@ -38,7 +38,6 @@ import backend.academy.logs.validators.LocalPathValidator;
 import backend.academy.logs.validators.LogsArgumentsValidator;
 import backend.academy.logs.validators.UrlPathValidator;
 import backend.academy.logs.validators.Validator;
-import org.openjdk.jmh.util.FileUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -47,6 +46,7 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+import org.openjdk.jmh.util.FileUtils;
 
 public class LogsAnalyzerApp implements App {
     private final PrintStream messagePrintStream;
@@ -119,8 +119,8 @@ public class LogsAnalyzerApp implements App {
             FileUtils.writeLines(new File(parsingResult.output()), List.of());
             return new PrintStream(new FileOutputStream(parsingResult.output(), true));
         } catch (FileNotFoundException e) {
-            messagePrintStream.println("File " + parsingResult.output() +
-                " cannot be created or cannot be opened. Output redirected to System.out");
+            messagePrintStream.println("File " + parsingResult.output()
+                + " cannot be created or cannot be opened. Output redirected to System.out");
             return System.out;
         } catch (IOException e) {
             messagePrintStream.println("Error due clear file. Output redirected to System.out");
