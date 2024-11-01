@@ -1,5 +1,8 @@
 package backend.academy.logs.types;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class StatusCodes {
     public static final int CONTINUE = 100;
     public static final int SWITCHING_PROTOCOLS = 101;
