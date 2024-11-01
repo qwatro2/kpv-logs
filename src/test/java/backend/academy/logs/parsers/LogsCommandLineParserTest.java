@@ -12,14 +12,14 @@ class LogsCommandLineParserTest {
         String[] args = new String[0];
         ParsingResult expected = new ParsingResult();
         ParsingResult actual = clp.parse(args);
-        assertTrue(expected.equals(actual));
+        assertTrue(ParsingResult.equals(expected, actual));
     }
 
     @Test
     void parseNull() {
         ParsingResult expected = new ParsingResult();
         ParsingResult actual = clp.parse(null);
-        assertTrue(expected.equals(actual));
+        assertTrue(ParsingResult.equals(expected, actual));
     }
 
     @Test
@@ -28,7 +28,7 @@ class LogsCommandLineParserTest {
         args[0] = "--path";
         ParsingResult expected = new ParsingResult();
         ParsingResult actual = clp.parse(args);
-        assertTrue(expected.equals(actual));
+        assertTrue(ParsingResult.equals(expected, actual));
     }
 
     @Test
@@ -37,7 +37,7 @@ class LogsCommandLineParserTest {
         args[0] = "aboba";
         ParsingResult expected = new ParsingResult();
         ParsingResult actual = clp.parse(args);
-        assertTrue(expected.equals(actual));
+        assertTrue(ParsingResult.equals(expected, actual));
     }
 
     @Test
@@ -50,6 +50,6 @@ class LogsCommandLineParserTest {
 
         ParsingResult expected = new ParsingResult().path(args[1]).format(args[3]);
         ParsingResult actual = clp.parse(args);
-        assertTrue(expected.equals(actual));
+        assertTrue(ParsingResult.equals(expected, actual));
     }
 }

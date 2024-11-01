@@ -1,8 +1,8 @@
 package backend.academy.logs.entities;
 
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -23,9 +23,5 @@ public class ParsingResult {
             && Objects.equals(lhs.filterField, rhs.filterField)
             && Objects.equals(lhs.filterValue, rhs.filterValue)
             && Objects.equals(lhs.output, rhs.output);
-    }
-
-    public boolean equals(ParsingResult other) {
-        return equals(this, other);
     }
 }
