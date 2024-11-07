@@ -1,137 +1,78 @@
-# Шаблон Java-проекта для домашних заданий
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/central-university-dev/backend_academy_2024_project_3-java-qwatro2/blob/master/README.md)
+[![pt-br](https://img.shields.io/badge/lang-ru-green.svg)](https://github.com/central-university-dev/backend_academy_2024_project_3-java-qwatro2/blob/master/README.ru.md)
 
-Шаблон для домашних заданий [Академии Бэкенда 2024][course-url].
+# Log analyzer
 
-Цель данного репозитория – познакомить вас с процессом разработки приложений на
-Java с использованием наиболее распространенных практик, инструментов и
-библиотек.
+# How to use?
 
-## Структура проекта
+In IDEA, open the configuration settings
 
-Это типовой Java-проект, который собирается с помощью инструмента автоматической
-сборки проектов [Apache Maven](https://maven.apache.org/).
+![image.png](images/image.png)
 
-Проект состоит из следующих директорий и файлов:
+![image.png](images/image%201.png)
 
-- [pom.xml](./pom.xml) – дескриптор сборки, используемый maven, или Project
-  Object Model. В нем описаны зависимости проекта и шаги по его сборке
-- [src/](./src) – директория, которая содержит исходный код приложения и его
-  тесты:
-  - [src/main/](./src/main) – здесь находится код вашего приложения
-  - [src/test/](./src/test) – здесь находятся тесты вашего приложения
-- [mvnw](./mvnw) и [mvnw.cmd](./mvnw.cmd) – скрипты maven wrapper для Unix и
-  Windows, которые позволяют запускать команды maven без локальной установки
-- [checkstyle.xml](checkstyle.xml),
-  [checkstyle-suppression.xml](checkstyle-suppression.xml), [pmd.xml](pmd.xml) и
-  [spotbugs-excludes.xml](spotbugs-excludes.xml) – в проекте используются
-  [линтеры](https://en.wikipedia.org/wiki/Lint_%28software%29) для контроля
-  качества кода. Указанные файлы содержат правила для используемых линтеров
-- [.mvn/](./.mvn) – служебная директория maven, содержащая конфигурационные
-  параметры сборщика
-- [lombok.config](lombok.config) – конфигурационный файл
-  [Lombok](https://projectlombok.org/), библиотеки помогающей избежать рутинного
-  написания шаблонного кода
-- [.editorconfig](.editorconfig) – файл с описанием настроек форматирования кода
-- [.github/workflows/build.yml](.github/workflows/build.yml) – файл с описанием
-  шагов сборки проекта в среде Github
-- [.gitattributes](.gitattributes), [.gitignore](.gitignore) – служебные файлы
-  для git, с описанием того, как обрабатывать различные файлы, и какие из них
-  игнорировать
+![image.png](images/image%202.png)
 
-## Начало работы
+Here you can write command line arguments, after that we launch the project.
 
-Подробнее о том, как приступить к разработке, описано в разделах
-[курса][course-url] `1.8 Настройка IDE`, `1.9 Работа с Git` и
-`1.10 Настройка SSH`.
+If the `--path` argument is missing, we will see an error
 
-Для того чтобы собрать проект, и проверить, что все работает корректно, можно
-запустить из модального окна IDEA
-[Run Anything](https://www.jetbrains.com/help/idea/running-anything.html)
-команду:
+![image.png](images/image%203.png)
 
-```shell
-mvn clean verify
-```
+If the `--path` argument is not a path to local files or to a file on the Internet, we will see an error
 
-Альтернативно можно в терминале из корня проекта выполнить следующие команды.
+![image.png](images/image%204.png)
 
-Для Unix (Linux, macOS, Cygwin, WSL):
+If the `--from` and `--to` arguments are not in the `YYYY-MM-DD` format, we will see an error
 
-```shell
-./mvnw clean verify
-```
+![image.png](images/image%205.png)
 
-Для Windows:
+If the `--format` argument is not `markdown` or `adoc`, we will see an error
 
-```shell
-mvnw.cmd clean verify
-```
+![image.png](images/image%206.png)
 
-Для окончания сборки потребуется подождать какое-то время, пока maven скачает
-все необходимые зависимости, скомпилирует проект и прогонит базовый набор
-тестов.
+If only one of the `--filter-field` and `--filter-value` arguments is specified, we will see an error
 
-Если вы в процессе сборки получили ошибку:
+![image.png](images/image%207.png)
 
-```shell
-Rule 0: org.apache.maven.enforcer.rules.version.RequireJavaVersion failed with message:
-JDK version must be at least 22
-```
+If the `--filter-field` argument specifies a field that is not in the logs, we will see an error
 
-Значит, версия вашего JDK ниже 22.
+![image.png](images/image%208.png)
 
-Если же получили ошибку:
+![image.png](images/image%209.png)
 
-```shell
-Rule 1: org.apache.maven.enforcer.rules.version.RequireMavenVersion failed with message:
-Maven version should, at least, be 3.8.8
-```
+![image.png](images/image%2010.png)
 
-Значит, у вас используется версия maven ниже 3.8.8. Такого не должно произойти,
-если вы запускаете сборку из IDEA или через `mvnw`-скрипты.
+If the `--output` argument contains `*` , we will see an error
 
-Далее будут перечислены другие полезные команды maven.
+![image.png](images/image%2011.png)
 
-Запуск только компиляции основных классов:
+If the `--output` argument is not a local path, we will see an error
 
-```shell
-mvn compile
-```
+![image.png](images/image%2012.png)
 
-Запуск тестов:
+If the `--output` argument leads to a file that cannot be created or opened, we will see an error
 
-```shell
-mvn test
-```
+![image.png](images/image%2013.png)
 
-Запуск линтеров:
+Next, if there are no errors, the program will analyze the specified logs and output them in the format
 
-```shell
-mvn checkstyle:check modernizer:modernizer spotbugs:check pmd:check pmd:cpd-check
-```
+- `markdown` or `adoc` if specified by the corresponding command line argument
+- `plain text` if no argument is specified
 
-Вывод дерева зависимостей проекта (полезно при отладке транзитивных
-зависимостей):
+  ![image.png](images/image%2014.png)
 
-```shell
-mvn dependency:tree
-```
+и
 
-Вывод вспомогательной информации о любом плагине (вместо `compiler` можно
-подставить интересующий вас плагин):
+- to the console if the `--output` argument is not specified
+- to the file specified by the `--output` argument
 
-```shell
-mvn help:describe -Dplugin=compiler
-```
+Metrics that count the number of requests for some feature display no more than 5 with the largest number of records.
 
-## Дополнительные материалы
+# What's going on inside?
 
-- Документация по maven: https://maven.apache.org/guides/index.html
-- Поиск зависимостей и их версий: https://central.sonatype.com/search
-- Документация по процессу автоматизированной сборки в среде github:
-  https://docs.github.com/en/actions
-- Документация по git: https://git-scm.com/doc
-- Javadoc для Java 22:
-  https://docs.oracle.com/en/java/javase/22/docs/api/index.html
-
-[course-url]: https://edu.tinkoff.ru/all-activities/courses/870efa9d-7067-4713-97ae-7db256b73eab
+1. Parsing command line arguments
+2. Validating these arguments
+3. Getting `Stream` of log entries
+4. Collecting statistics on these logs
+5. Printing the collected statistics
