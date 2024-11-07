@@ -140,7 +140,7 @@ public class LogsArgumentsValidator implements ArgumentsValidator {
                 new FileOutputStream(parsingResult.output(), true);
             } catch (FileNotFoundException e) {
                 validationResult.isValid(false).message("File " + parsingResult.output()
-                    + "cannot be created or cannot be opened");
+                    + " cannot be created or cannot be opened");
                 result =  false;
             }
         }
