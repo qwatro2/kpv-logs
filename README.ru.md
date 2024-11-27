@@ -1,5 +1,5 @@
-[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/central-university-dev/backend_academy_2024_project_3-java-qwatro2/blob/master/README.md)
-[![pt-br](https://img.shields.io/badge/lang-ru-green.svg)](https://github.com/central-university-dev/backend_academy_2024_project_3-java-qwatro2/blob/master/README.ru.md)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/qwatro2/kpv-logs/blob/master/README.md)
+[![pt-br](https://img.shields.io/badge/lang-ru-green.svg)](https://github.com/qwatro2/kpv-logs/blob/master/README.ru.md)
 
 # Анализатор логов
 
